@@ -1,6 +1,6 @@
-import { styled } from "@mui/system";
+import { makeStyles } from "tss-react/mui";
 
-export default styled(() => ({
+const useStyles = makeStyles()({
   root: {
     display: "flex",
     height: "100%",
@@ -12,4 +12,6 @@ export default styled(() => ({
     flexGrow: "1",
     padding: "2em",
   },
-}));
+});
+
+export default useStyles;
