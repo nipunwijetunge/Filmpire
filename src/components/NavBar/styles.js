@@ -1,19 +1,19 @@
 import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles()((_theme) => ({
+const useStyles = makeStyles()((theme) => ({
   toolbar: {
     height: "80px",
     display: "flex",
     justifyContent: "space-between",
     marginLeft: "240px",
-    [_theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("sm")]: {
       marginLeft: "0",
       flexWrap: "wrap",
     },
   },
   menuButton: {
-    marginRight: _theme.spacing(2),
-    [_theme.breakpoints.up("sm")]: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
       display: "none",
     },
   },
