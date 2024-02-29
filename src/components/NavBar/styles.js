@@ -1,5 +1,7 @@
 import { makeStyles } from "tss-react/mui";
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles()((theme) => ({
   toolbar: {
     height: "80px",
@@ -15,6 +17,21 @@ const useStyles = makeStyles()((theme) => ({
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       display: "none",
+    },
+  },
+  drawer: {
+    [theme.breakpoints.up("sm")]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  linkButton: {
+    "&:hover": {
+      color: "white !important",
+      textDecoration: "none",
     },
   },
 }));
