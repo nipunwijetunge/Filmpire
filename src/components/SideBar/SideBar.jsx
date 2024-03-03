@@ -51,7 +51,7 @@ const SideBar = ({ setMobileOpen }) => {
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
           <Link key={value} className={classes.links} to="/">
-            <ListItemButton onClick={() => {}} Lis>
+            <ListItemButton onClick={() => {}}>
               {/* <ListItemIcon>
                 <img
                   src={blueLogo}
@@ -70,7 +70,7 @@ const SideBar = ({ setMobileOpen }) => {
         <ListSubheader>Genres</ListSubheader>
         {demoCategories.map(({ label, value }) => (
           <Link key={value} className={classes.links} to="/">
-            <ListItemButton onClick={() => {}} Lis>
+            <ListItemButton onClick={() => {}}>
               {/* <ListItemIcon>
                 <img
                   src={blueLogo}
