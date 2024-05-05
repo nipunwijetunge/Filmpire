@@ -20,15 +20,8 @@ import { useGetGenresQuery } from "../../services/TMDB";
 
 const categories = [
   { label: "Popular", value: "popular" },
-  { label: "Top Rated", value: "top rated" },
+  { label: "Top Rated", value: "top_rated" },
   { label: "Upcoming", value: "upcoming" },
-];
-const demoCategories = [
-  { label: "Comedy", value: "comedy" },
-  { label: "Action", value: "action" },
-  { label: "Horror", value: "horror" },
-  { label: "Drama", value: "drama" },
-  { label: "Sci-Fi", value: "sci-fi" },
 ];
 
 const blueLogo =
@@ -38,6 +31,9 @@ const redLogo =
   "https://fontmeme.com/permalink/210930/6854ae5c7f76597cf8680e48a2c8a50a.png";
 
 const SideBar = ({ setMobileOpen }) => {
+  const { genreIdOrCategoryName } = useSelector(
+    (state) => state.currentGenreOrCategory,
+  );
   const theme = useTheme();
   const { classes } = useStyles();
 
