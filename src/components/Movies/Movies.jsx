@@ -5,7 +5,7 @@ import {
   useMediaQuery,
   Typography,
 } from "@mui/material";
-import { UseSelector, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { useGetMoviesQuery } from "../../services/TMDB";
 import { MovieList } from "..";
