@@ -4,7 +4,7 @@ const useStyles = makeStyles()((theme) => ({
   moviesContainer: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     overflow: "auto",
     [theme.breakpoints.down("sm")]: {
       justifyContent: "center",
