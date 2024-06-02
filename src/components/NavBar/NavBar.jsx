@@ -21,7 +21,7 @@ import { useTheme } from "@mui/material/styles";
 
 import { setUser, userSelector } from "../../features/auth";
 import { Search, SideBar } from "..";
-import { movieApi, fetchToken, createSessionId } from "../../utils";
+import { movieApi, fetchToken, createSessionId } from "../../utils/index";
 
 import useStyles from "./styles";
 
@@ -32,27 +32,25 @@ const NavBar = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  console.log(user);
-
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const token = localStorage.getItem("request_token");
-  const sessionIdFormLocalStorage = localStorage.getItem("session_id");
+  const session_id = localStorage.getItem("session_id");
 
   useEffect(() => {
     const loginUser = async () => {
       if (token) {
-        if (sessionIdFormLocalStorage) {
+        if (session_id) {
           const { data: userData } = await movieApi.get(
-            `/account?session_id=${sessionIdFormLocalStorage}`,
+            `/account?session_id=${session_id}`,
           );
 
           dispatch(setUser(userData));
         } else {
-          const sessionId = await createSessionId();
+          const session_id = await createSessionId();
 
           const { data: userData } = await movieApi.get(
-            `/account?session_id=${sessionId}`,
+            `/account?session_id=${session_id}`,
           );
 
           dispatch(setUser(userData));
