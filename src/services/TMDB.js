@@ -21,15 +21,15 @@ export const tmdbApi = createApi({
         }
 
         if (
-          genreIdOrCategoryName &&
-          typeof genreIdOrCategoryName === "string"
+          genreIdOrCategoryName
+          && typeof genreIdOrCategoryName === "string"
         ) {
           return `/movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
 
         if (
-          genreIdOrCategoryName &&
-          typeof genreIdOrCategoryName === "number"
+          genreIdOrCategoryName
+          && typeof genreIdOrCategoryName === "number"
         ) {
           return `/discover/movie?with_genres=${genreIdOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
         }

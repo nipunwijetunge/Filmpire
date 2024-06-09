@@ -18,8 +18,8 @@ export const fetchToken = async () => {
 
       window.location.href = `https://www.themoviedb.org/authenticate/${token}?redirect_to=${window.location.origin}/approved`;
     }
-  } catch (error) {
-    console.log("Sorry your token could not be created.");
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -28,15 +28,18 @@ export const createSessionId = async () => {
 
   if (token) {
     try {
-      const { data } = await movieApi.post("/authentication/session/new", {
+      const {
+        // eslint-disable-next-line camelcase
+        data: { session_id },
+      } = await movieApi.post("authentication/session/new", {
         request_token: token,
       });
 
-      localStorage.setItem("session_id", data.session_id);
+      localStorage.setItem("session_id", session_id);
 
-      return data.session_id;
-    } catch (error) {
-      console.log(error);
+      return session_id;
+    } catch (e) {
+      console.error(e);
     }
   }
 };
