@@ -25,11 +25,14 @@ import axios from "axios";
 
 import useStyles from "./styles";
 import { useGetMovieQuery } from "../../services/TMDB";
+import genreIcons from "../../assets/genres";
+import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 
 const MovieInformation = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
   const { classes } = useStyles();
+  const dispatch = useDispatch();
 
   if (isFetching) {
     return (
@@ -48,13 +51,59 @@ const MovieInformation = () => {
   }
 
   return (
-    <Grid container={classes.containerSpaceAround}>
-      <Grid>
+    <Grid container className={classes.containerSpaceAround}>
+      <Grid item sm={12} md={6} lg={4} className={classes.posterContainer}>
         <img
           className={classes.poster}
           src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
           alt={data?.title}
         />
+      </Grid>
+      <Grid item container direction="column" lg={7}>
+        <Typography variant="h3" align="center" gutterBottom>
+          {data?.title} ({data.release_date.split("-")[0]})
+        </Typography>
+        <Typography variant="h5" align="center" gutterBottom>
+          {data?.tagline}
+        </Typography>
+        <Grid item className={classes.containerSpaceAround}>
+          <Box display="flex" align="center">
+            <Rating readOnly value={data.vote_average / 2} />
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ marginLeft: "10px" }}
+            >
+              {data?.vote_average.toFixed(2)} / 10
+            </Typography>
+          </Box>
+          <Typography variant="h6" align="center" gutterBottom>
+            {data?.runtime}min
+            {data?.spoken_languages.length > 0
+              ? `/ ${data?.spoken_languages[0].name}`
+              : ""}
+          </Typography>
+        </Grid>
+        <Grid item className={classes.genresContainer}>
+          {data?.genres?.map((genre, i) => (
+            <Link
+              key={genre.name}
+              className={classes.links}
+              to="/"
+              onClick={() => dispatch(selectGenreOrCategory(genre.id))}
+            >
+              <img
+                src={genreIcons[genre.name.toLowerCase()]}
+                alt={name}
+                className={classes.genreImage}
+                height={30}
+              />
+              <Typography color="textPrimary" variant="subtitle1">
+                {genre?.name}
+              </Typography>
+            </Link>
+          ))}
+        </Grid>
       </Grid>
     </Grid>
   );
