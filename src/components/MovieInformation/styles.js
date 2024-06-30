@@ -14,6 +14,7 @@ const useStyles = makeStyles()((theme) => ({
   posterContainer: {
     display: "flex",
     justifyContent: "center",
+    height: "100%",
   },
   poster: {
     borderRadius: "20px",
@@ -49,6 +50,13 @@ const useStyles = makeStyles()((theme) => ({
     [theme.breakpoints.down("sm")]: {
       padding: "0.5rem 1rem",
     },
+  },
+  castImage: {
+    width: "100%",
+    maxWidth: "7em",
+    height: "8em",
+    objectFit: "cover",
+    borderRadius: "10px",
   },
 }));
 
