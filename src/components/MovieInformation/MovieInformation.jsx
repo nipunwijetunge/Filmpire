@@ -155,69 +155,72 @@ const MovieInformation = () => {
               )
               .slice(0, 6)}
         </Grid>
-        <Grid item container style={{ marginTop: "2rem" }}>
-          <div className={classes.buttonsContainer}>
-            <Grid item xs={12} sm={6} className={classes.buttonsContainer}>
-              <ButtonGroup size="small" varient="outlined">
-                <Button
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={data?.homepage}
-                  endIcon={<Language />}
-                >
-                  Website
-                </Button>
-                <Button
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
-                  endIcon={<MovieIcon />}
-                >
-                  IMDB
-                </Button>
-                <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
-                  Trailer
-                </Button>
-              </ButtonGroup>
-            </Grid>
+        <Grid
+          item
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          style={{ marginTop: "2rem" }}
+        >
+          {/*<div className={classes.buttonsContainer}>*/}
+          <Grid item>
+            <ButtonGroup size="medium" varient="outlined" spacing={2}>
+              <Button
+                target="_blank"
+                rel="noopener noreferrer"
+                href={data?.homepage}
+                endIcon={<Language />}
+              >
+                Website
+              </Button>
+              <Button
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://www.imdb.com/title/${data?.imdb_id}`}
+                endIcon={<MovieIcon />}
+              >
+                IMDB
+              </Button>
+              <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
+                Trailer
+              </Button>
+            </ButtonGroup>
+          </Grid>
 
-            <Grid item xs={12} sm={6} className={classes.buttonsContainer}>
-              <ButtonGroup size="small" varient="outlined">
-                <Button
-                  onClick={addToFavourite}
-                  endIcon={
-                    isMovieFavourited ? (
-                      <FavoriteBorderOutlined />
-                    ) : (
-                      <Favorite />
-                    )
-                  }
+          <Grid item>
+            <ButtonGroup size="medium" varient="outlined">
+              <Button
+                onClick={addToFavourite}
+                endIcon={
+                  isMovieFavourited ? <FavoriteBorderOutlined /> : <Favorite />
+                }
+              >
+                {isMovieFavourited ? "Unfavourite" : "Favourite"}
+              </Button>
+              <Button
+                onClick={addToWatchlist}
+                endIcon={isWatchlisted ? <Remove /> : <PlusOne />}
+              >
+                {isWatchlisted ? "Watchlist" : "Watchlist"}
+              </Button>
+              <Button
+                endIcon={<ArrowBack />}
+                sx={{ borderColor: "primary.main" }}
+              >
+                <Typography
+                  component={Link}
+                  to="/"
+                  color="inherit"
+                  variant="subtitle2"
+                  sx={{ textDecoration: "none" }}
                 >
-                  {isMovieFavourited ? "Unfavourite" : "Favourite"}
-                </Button>
-                <Button
-                  onClick={addToWatchlist}
-                  endIcon={isWatchlisted ? <Remove /> : <PlusOne />}
-                >
-                  {isWatchlisted ? "Watchlist" : "Watchlist"}
-                </Button>
-                <Button
-                  endIcon={<ArrowBack />}
-                  sx={{ borderColor: "primary.main" }}
-                >
-                  <Typography
-                    component={Link}
-                    top="/"
-                    color="inherit"
-                    variant="subtitle2"
-                    sx={{ textDecoration: "none" }}
-                  >
-                    Back
-                  </Typography>
-                </Button>
-              </ButtonGroup>
-            </Grid>
-          </div>
+                  Back
+                </Typography>
+              </Button>
+            </ButtonGroup>
+          </Grid>
+          {/*</div>*/}
         </Grid>
       </Grid>
     </Grid>

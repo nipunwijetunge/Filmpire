@@ -47,6 +47,7 @@ const useStyles = makeStyles()((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    textDecoration: "none",
     [theme.breakpoints.down("sm")]: {
       padding: "0.5rem 1rem",
     },
@@ -57,6 +58,15 @@ const useStyles = makeStyles()((theme) => ({
     height: "8em",
     objectFit: "cover",
     borderRadius: "10px",
+  },
+  buttonsContainer: {
+    border: "1px solid black",
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
 }));
 
