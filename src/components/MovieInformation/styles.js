@@ -1,5 +1,4 @@
 import { makeStyles } from "tss-react/mui";
-import { flexbox, padding, textAlign } from "@mui/system";
 
 const useStyles = makeStyles()((theme) => ({
   containerSpaceAround: {
