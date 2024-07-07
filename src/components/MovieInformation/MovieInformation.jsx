@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Typography,
@@ -26,15 +26,26 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import useStyles from "./styles";
-import { useGetMovieQuery, useGetCreditsQuery } from "../../services/TMDB";
+import {
+  useGetMovieQuery,
+  useGetRecommendationsQuery,
+} from "../../services/TMDB";
 import genreIcons from "../../assets/genres";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
+import { MovieList } from "../index";
 
 const MovieInformation = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
   const { classes } = useStyles();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+
+  const { data: recommendations, isFetching: isRecommendationsFetching } =
+    useGetRecommendationsQuery({
+      movie_id: id,
+      list: "recommendations",
+    });
 
   const isMovieFavourited = false;
   const isWatchlisted = false;
@@ -182,7 +193,11 @@ const MovieInformation = () => {
               >
                 IMDB
               </Button>
-              <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
+              <Button
+                onClick={() => setOpen(true)}
+                href="#"
+                endIcon={<Theaters />}
+              >
                 Trailer
               </Button>
             </ButtonGroup>
@@ -223,6 +238,35 @@ const MovieInformation = () => {
           {/*</div>*/}
         </Grid>
       </Grid>
+      <Box marginTop="5rem" width="100%">
+        <Typography variant="h3" gutterBottom align="center">
+          You might also like
+        </Typography>
+        {/*  loop through the recommended movies */}
+        {recommendations ? (
+          <MovieList movies={recommendations} />
+        ) : (
+          <Box>Sorry! nothing was found.</Box>
+        )}
+      </Box>
+      {console.log(data?.videos?.results)}
+      <Modal
+        closeAfterTransition
+        className={classes.model}
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        {data?.videos?.results?.length > 0 && (
+          <iframe
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            className={classes.video}
+            title="Trailer"
+            src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+          ></iframe>
+        )}
+      </Modal>
     </Grid>
   );
 };

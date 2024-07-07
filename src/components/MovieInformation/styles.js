@@ -1,5 +1,5 @@
 import { makeStyles } from "tss-react/mui";
-import { flexbox, padding } from "@mui/system";
+import { flexbox, padding, textAlign } from "@mui/system";
 
 const useStyles = makeStyles()((theme) => ({
   containerSpaceAround: {
@@ -66,6 +66,20 @@ const useStyles = makeStyles()((theme) => ({
     width: "100%",
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
+    },
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  video: {
+    width: "50%",
+    height: "50%",
+    margin: "10% 0 0 25%",
+    [theme.breakpoints.down("sm")]: {
+      width: "90%",
+      height: "90%",
     },
   },
 }));
