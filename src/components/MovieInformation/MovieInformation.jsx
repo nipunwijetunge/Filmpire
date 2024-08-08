@@ -21,7 +21,7 @@ import {
   FavoriteOutlined,
   Remove,
 } from "@mui/icons-material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -40,6 +40,7 @@ const MovieInformation = () => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const { data: recommendations, isFetching: isRecommendationsFetching } =
     useGetRecommendationsQuery({
@@ -221,6 +222,7 @@ const MovieInformation = () => {
               </Button>
               <Button
                 endIcon={<ArrowBack />}
+                onClick={() => navigate(-1)}
                 sx={{ borderColor: "primary.main" }}
               >
                 <Typography

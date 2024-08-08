@@ -1,6 +1,9 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { useGetActorsQuery } from "../../services/TMDB";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import {
+  useGetActorsQuery,
+  useGetActorRelatedMoviesQuery,
+} from "../../services/TMDB";
 import useStyles from "./styles";
 import {
   Box,
@@ -16,7 +19,9 @@ import { MovieList } from "../index";
 const Actors = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetActorsQuery(id);
+  const { data: movies } = useGetActorRelatedMoviesQuery({ id, page });
   const { classes } = useStyles();
+  const navigate = useNavigate();
 
   if (isFetching) {
     return (
@@ -29,7 +34,13 @@ const Actors = () => {
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Link to="/">Something has gone wrong!</Link>
+        <Button
+          startIcon={<ArrowBack />}
+          onClick={() => navigate(-1)}
+          color="primary"
+        >
+          Go Back
+        </Button>
       </Box>
     );
   }
@@ -58,7 +69,7 @@ const Actors = () => {
           <Typography variant="h5" align="left" gutterBottom>
             Born: {new Date(data?.birthday).toDateString()}
           </Typography>
-          <Typography variant="body2" align="left" gutterBottom>
+          <Typography variant="body2" align="justify" paragraph>
             {data?.biography}
           </Typography>
         </Grid>
@@ -70,8 +81,19 @@ const Actors = () => {
           justifyContent="space-between"
           marginTop="2rem"
         >
-          <Button variant="contained">IMDB</Button>
-          <Button startIcon={<ArrowBack />} variant="text">
+          <Button
+            variant="contained"
+            color="primary"
+            target="_blank"
+            href={`https://www.imdb.com/name/${data?.imdb_id}`}
+          >
+            IMDB
+          </Button>
+          <Button
+            startIcon={<ArrowBack />}
+            onClick={() => navigate(-1)}
+            variant="text"
+          >
             BACK
           </Button>
         </Grid>
@@ -80,8 +102,8 @@ const Actors = () => {
         <Typography variant="h3" gutterBottom align="center">
           Movies
         </Typography>
-        {data?.movie_credits ? (
-          <MovieList movies={data.movie_credits} />
+        {movies ? (
+          <MovieList movies={movies} />
         ) : (
           <Box>Sorry! nothing was found.</Box>
         )}
