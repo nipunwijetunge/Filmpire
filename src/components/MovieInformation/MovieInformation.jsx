@@ -9,6 +9,7 @@ import {
   CircularProgress,
   useMediaQuery,
   Rating,
+  Pagination,
 } from "@mui/material";
 import {
   Movie as MovieIcon,
@@ -40,12 +41,14 @@ const MovieInformation = () => {
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
   const { data: recommendations, isFetching: isRecommendationsFetching } =
     useGetRecommendationsQuery({
       movie_id: id,
       list: "recommendations",
+      page,
     });
 
   const isMovieFavourited = false;
@@ -70,6 +73,10 @@ const MovieInformation = () => {
       </Box>
     );
   }
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <Grid container className={classes.containerSpaceAround}>
@@ -246,7 +253,24 @@ const MovieInformation = () => {
         </Typography>
         {/*  loop through the recommended movies */}
         {recommendations ? (
-          <MovieList movies={recommendations} />
+          <>
+            <MovieList movies={recommendations} />
+            <Pagination
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              variant="outlined"
+              color="primary"
+              size="large"
+              count={`${recommendations?.total_pages}`}
+              showFirstButton
+              showLastButton
+              page={page}
+              onChange={handleChange}
+            />
+          </>
         ) : (
           <Box>Sorry! nothing was found.</Box>
         )}

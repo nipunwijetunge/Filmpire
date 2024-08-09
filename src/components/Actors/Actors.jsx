@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useGetActorsQuery,
@@ -11,6 +11,7 @@ import {
   ButtonGroup,
   CircularProgress,
   Grid,
+  Pagination,
   Typography,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
@@ -18,6 +19,7 @@ import { MovieList } from "../index";
 
 const Actors = () => {
   const { id } = useParams();
+  const [page, setPage] = useState(1);
   const { data, isFetching, error } = useGetActorsQuery(id);
   const { data: movies } = useGetActorRelatedMoviesQuery({ id, page });
   const { classes } = useStyles();
@@ -44,6 +46,10 @@ const Actors = () => {
       </Box>
     );
   }
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <Grid container className={classes.containerSpaceAround}>
@@ -103,7 +109,24 @@ const Actors = () => {
           Movies
         </Typography>
         {movies ? (
-          <MovieList movies={movies} />
+          <>
+            <MovieList movies={movies} />
+            <Pagination
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              variant="outlined"
+              color="primary"
+              size="large"
+              count={`${movies?.total_pages}`}
+              showFirstButton
+              showLastButton
+              page={page}
+              onChange={handleChange}
+            />
+          </>
         ) : (
           <Box>Sorry! nothing was found.</Box>
         )}
