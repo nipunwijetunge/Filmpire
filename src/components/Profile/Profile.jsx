@@ -1,13 +1,22 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import { userSelector } from "../../features/auth";
+import { Button } from "@mui/material";
+import { ExitToApp } from "@mui/icons-material";
 
 const Profile = () => {
-  const { user } = useSelector(userSelector);
-  console.log(user);
+  const logout = () => {
+    localStorage.clear();
 
-  return <div>{user.username}</div>;
+    window.location.href = "/";
+  };
+
+  return (
+    <div>
+      <Button color="inherit" onClick={logout}>
+        Logout &nbsp; <ExitToApp />
+      </Button>
+    </div>
+  );
 };
 
 export default Profile;
