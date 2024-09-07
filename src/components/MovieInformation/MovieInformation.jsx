@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Typography,
@@ -28,16 +28,18 @@ import axios from "axios";
 
 import useStyles from "./styles";
 import {
+  useGetListQuery,
   useGetMovieQuery,
   useGetRecommendationsQuery,
 } from "../../services/TMDB";
 import genreIcons from "../../assets/genres";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 import { MovieList } from "../index";
+import { userSelector } from "../../features/auth";
 
 const MovieInformation = () => {
+  const { user } = useSelector(userSelector);
   const { id } = useParams();
-  const { data, isFetching, error } = useGetMovieQuery(id);
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -50,13 +52,74 @@ const MovieInformation = () => {
       list: "recommendations",
       page,
     });
+  const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: favoriteMovies } = useGetListQuery({
+    listName: "favorite/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
+  const { data: watchlistMovies } = useGetListQuery({
+    listName: "watchlist/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
 
-  const isMovieFavourited = false;
-  const isWatchlisted = false;
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchListed, setIsMovieWatchListed] = useState(false);
 
-  const addToFavourite = () => {};
+  useEffect(() => {
+    setIsMovieFavorited(
+      !!favoriteMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [favoriteMovies, data]);
 
-  const addToWatchlist = () => {};
+  useEffect(() => {
+    setIsMovieWatchListed(
+      !!watchlistMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [watchlistMovies, data]);
+
+  const addToFavorite = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/favorite?session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        favorite: !isMovieFavorited,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
+        },
+      },
+    );
+
+    setIsMovieFavorited((prevState) => !prevState);
+  };
+
+  const addToWatchlist = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist?session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        watchlist: !isMovieWatchListed,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
+        },
+      },
+    );
+
+    setIsMovieWatchListed((prevState) => !prevState);
+  };
 
   if (isFetching) {
     return (
@@ -214,18 +277,18 @@ const MovieInformation = () => {
           <Grid item>
             <ButtonGroup size="medium" varient="outlined">
               <Button
-                onClick={addToFavourite}
+                onClick={addToFavorite}
                 endIcon={
-                  isMovieFavourited ? <FavoriteBorderOutlined /> : <Favorite />
+                  isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />
                 }
               >
-                {isMovieFavourited ? "Unfavourite" : "Favourite"}
+                {isMovieFavorited ? "Remove" : "Favourite"}
               </Button>
               <Button
                 onClick={addToWatchlist}
-                endIcon={isWatchlisted ? <Remove /> : <PlusOne />}
+                endIcon={isMovieWatchListed ? <Remove /> : <PlusOne />}
               >
-                {isWatchlisted ? "Watchlist" : "Watchlist"}
+                {isMovieWatchListed ? "Watchlist" : "Watchlist"}
               </Button>
               <Button
                 endIcon={<ArrowBack />}
@@ -264,7 +327,7 @@ const MovieInformation = () => {
               variant="outlined"
               color="primary"
               size="large"
-              count={`${recommendations?.total_pages}`}
+              count={recommendations?.total_pages}
               showFirstButton
               showLastButton
               page={page}
@@ -275,7 +338,6 @@ const MovieInformation = () => {
           <Box>Sorry! nothing was found.</Box>
         )}
       </Box>
-      {console.log(data?.videos?.results)}
       <Modal
         closeAfterTransition
         className={classes.model}
