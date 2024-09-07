@@ -98,7 +98,7 @@ const MovieInformation = () => {
       },
     );
 
-    setIsMovieFavorited((prevState) => !prevState);
+    setIsMovieFavorited((prev) => !prev);
   };
 
   const addToWatchlist = async () => {
@@ -118,7 +118,7 @@ const MovieInformation = () => {
       },
     );
 
-    setIsMovieWatchListed((prevState) => !prevState);
+    setIsMovieWatchListed((prev) => !prev);
   };
 
   if (isFetching) {
@@ -276,6 +276,7 @@ const MovieInformation = () => {
 
           <Grid item>
             <ButtonGroup size="medium" varient="outlined">
+              {console.log(isMovieFavorited)}
               <Button
                 onClick={addToFavorite}
                 endIcon={
