@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  CircularProgress,
-  useMediaQuery,
-  Typography,
-  Pagination,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Box, CircularProgress, Typography, Pagination } from "@mui/material";
 import { useSelector } from "react-redux";
 
 import { useGetMoviesQuery } from "../../services/TMDB";
-import { MovieList } from "..";
-import currentGenreOrCategory from "../../features/currentGenreOrCategory";
+import { FeaturedMovie, MovieList } from "..";
 
 const Movies = () => {
   const { genreIdOrCategoryName, searchQuery } = useSelector(
@@ -51,8 +44,8 @@ const Movies = () => {
 
   return (
     <div>
-      {/*<h4>{genreIdOrCategoryName}</h4>*/}
-      <MovieList movies={data} numberOfMovies={20} />
+      <FeaturedMovie movie={data.results[0]} />
+      <MovieList movies={data} numberOfMovies={19} excludeFirst />
       <Pagination
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
         variant="outlined"

@@ -318,7 +318,7 @@ const MovieInformation = () => {
         {/*  loop through the recommended movies */}
         {recommendations ? (
           <>
-            <MovieList movies={recommendations} />
+            <MovieList movies={recommendations} numberOfMovies={18} />
             <Pagination
               sx={{
                 display: "flex",

@@ -110,7 +110,7 @@ const Actors = () => {
         </Typography>
         {movies ? (
           <>
-            <MovieList movies={movies} />
+            <MovieList movies={movies} numberOfMovies={18} />
             <Pagination
               sx={{
                 display: "flex",
