@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   IconButton,
   Toolbar,
@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 
+import { ColorModeContext } from "../../utils/ToggleColorMode";
 import { setUser, userSelector } from "../../features/auth";
 import { Search, SideBar } from "..";
 import { movieApi, fetchToken, createSessionId } from "../../utils/index";
@@ -30,6 +31,8 @@ const NavBar = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const theme = useTheme();
   const dispatch = useDispatch();
+
+  const colorMode = useContext(ColorModeContext);
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -75,7 +78,11 @@ const NavBar = () => {
               <Menu />
             </IconButton>
           )}
-          <IconButton color="inherit" sx={{ ml: 1 }} onClick={() => {}}>
+          <IconButton
+            color="inherit"
+            sx={{ ml: 1 }}
+            onClick={colorMode.toggleColorMode}
+          >
             {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           {!isMobile && <Search />}
@@ -96,7 +103,7 @@ const NavBar = () => {
                 <Avatar
                   style={{ width: 30, height: 30 }}
                   alt="Profile"
-                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+                  src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
                 />
               </Button>
             )}

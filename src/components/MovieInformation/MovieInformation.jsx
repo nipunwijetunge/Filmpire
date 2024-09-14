@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Typography,
@@ -9,6 +9,7 @@ import {
   CircularProgress,
   useMediaQuery,
   Rating,
+  Pagination,
 } from "@mui/material";
 import {
   Movie as MovieIcon,
@@ -21,38 +22,104 @@ import {
   FavoriteOutlined,
   Remove,
 } from "@mui/icons-material";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
 import useStyles from "./styles";
 import {
+  useGetListQuery,
   useGetMovieQuery,
   useGetRecommendationsQuery,
 } from "../../services/TMDB";
 import genreIcons from "../../assets/genres";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 import { MovieList } from "../index";
+import { userSelector } from "../../features/auth";
 
 const MovieInformation = () => {
+  const { user } = useSelector(userSelector);
   const { id } = useParams();
-  const { data, isFetching, error } = useGetMovieQuery(id);
   const { classes } = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const { data: recommendations, isFetching: isRecommendationsFetching } =
     useGetRecommendationsQuery({
       movie_id: id,
       list: "recommendations",
+      page,
     });
+  const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: favoriteMovies } = useGetListQuery({
+    listName: "favorite/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
+  const { data: watchlistMovies } = useGetListQuery({
+    listName: "watchlist/movies",
+    accountId: user.id,
+    sessionId: localStorage.getItem("session_id"),
+    page: 1,
+  });
 
-  const isMovieFavourited = false;
-  const isWatchlisted = false;
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchListed, setIsMovieWatchListed] = useState(false);
 
-  const addToFavourite = () => {};
+  useEffect(() => {
+    setIsMovieFavorited(
+      !!favoriteMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [favoriteMovies, data]);
 
-  const addToWatchlist = () => {};
+  useEffect(() => {
+    setIsMovieWatchListed(
+      !!watchlistMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [watchlistMovies, data]);
+
+  const addToFavorite = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/favorite?session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        favorite: !isMovieFavorited,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
+        },
+      },
+    );
+
+    setIsMovieFavorited((prev) => !prev);
+  };
+
+  const addToWatchlist = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist?session_id=${localStorage.getItem("session_id")}`,
+      {
+        media_type: "movie",
+        media_id: id,
+        watchlist: !isMovieWatchListed,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
+        },
+      },
+    );
+
+    setIsMovieWatchListed((prev) => !prev);
+  };
 
   if (isFetching) {
     return (
@@ -69,6 +136,10 @@ const MovieInformation = () => {
       </Box>
     );
   }
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
     <Grid container className={classes.containerSpaceAround}>
@@ -205,22 +276,24 @@ const MovieInformation = () => {
 
           <Grid item>
             <ButtonGroup size="medium" varient="outlined">
+              {console.log(isMovieFavorited)}
               <Button
-                onClick={addToFavourite}
+                onClick={addToFavorite}
                 endIcon={
-                  isMovieFavourited ? <FavoriteBorderOutlined /> : <Favorite />
+                  isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />
                 }
               >
-                {isMovieFavourited ? "Unfavourite" : "Favourite"}
+                {isMovieFavorited ? "Remove" : "Favourite"}
               </Button>
               <Button
                 onClick={addToWatchlist}
-                endIcon={isWatchlisted ? <Remove /> : <PlusOne />}
+                endIcon={isMovieWatchListed ? <Remove /> : <PlusOne />}
               >
-                {isWatchlisted ? "Watchlist" : "Watchlist"}
+                {isMovieWatchListed ? "Watchlist" : "Watchlist"}
               </Button>
               <Button
                 endIcon={<ArrowBack />}
+                onClick={() => navigate(-1)}
                 sx={{ borderColor: "primary.main" }}
               >
                 <Typography
@@ -244,12 +317,28 @@ const MovieInformation = () => {
         </Typography>
         {/*  loop through the recommended movies */}
         {recommendations ? (
-          <MovieList movies={recommendations} />
+          <>
+            <MovieList movies={recommendations} numberOfMovies={18} />
+            <Pagination
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              variant="outlined"
+              color="primary"
+              size="large"
+              count={recommendations?.total_pages}
+              showFirstButton
+              showLastButton
+              page={page}
+              onChange={handleChange}
+            />
+          </>
         ) : (
           <Box>Sorry! nothing was found.</Box>
         )}
       </Box>
-      {console.log(data?.videos?.results)}
       <Modal
         closeAfterTransition
         className={classes.model}
